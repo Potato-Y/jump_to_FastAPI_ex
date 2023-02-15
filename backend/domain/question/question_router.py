@@ -1,6 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from database import SessionLocal
+# from database import SessionLocal
+from database import get_db
 from models import Question
 
 router = APIRouter(
@@ -8,6 +10,7 @@ router = APIRouter(
 )
 
 
+"""
 @router.get('/list')
 def question_list():
     db = SessionLocal()
@@ -15,3 +18,32 @@ def question_list():
         Question.create_date.desc()).all()  # db 세션 생성 및 질문 목록 조회
     db.close()  # 사용한 db 세션을 컨넥션 풀에 반환 (세션 종료가 아님)
     return _question_list
+"""
+
+""" 2-1 번째 방법
+@router.get('/list')
+def question_list():
+    with get_db() as db:
+        _question_list = db.query(Question).order_by(
+            Question.create_date.desc()).all()
+    return _question_list
+# 오류 여부에 상관없이 with 문을 벗어나는 순간 db.close()가 실행된다.
+"""
+
+# 2-2 방법
+
+
+@router.get('/list')
+def question_list(db: Session = Depends(get_db)):
+    _question_list = db.query(Question).order_by(
+        Question.create_date.desc()).all()
+    return _question_list
+
+
+"""
+get_db 함수를 with문과 함께 쓰는 대신 question_list 함수의 매개변수로 
+db: Session = Depends(get_db) 객체를 주입받았다.
+db: Session 문장의 의미는 db 객체가 Session 타입임을 의미한다.
+
+FastAPI의 Depends는 매개 변수로 전달 받은 함수를 실행시킨 결과를 리턴한다.
+"""

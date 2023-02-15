@@ -1,3 +1,4 @@
+# import contextlib
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -21,3 +22,20 @@ SessionLocal = sessionmaker(
 )
 
 Base = declarative_base()
+
+
+# @contextlib.contextmanager
+def get_db():  # db 세션 객체를 리턴하는 제너레이터 함수
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+"""ex
+with get_db() as db:
+
+with 문을 벗어나는 순간 get_db gkatndml finally에 작성한 db.close() 함수가
+자동으로 실행된다.
+"""
