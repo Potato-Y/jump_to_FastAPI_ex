@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 
 # from database import SessionLocal
 from database import get_db
-from models import Question
+from domain.question import question_schema, question_crud
+# from models import Question
 
 router = APIRouter(
     prefix='/api/question',
@@ -33,10 +34,11 @@ def question_list():
 # 2-2 방법
 
 
-@router.get('/list')
+@router.get('/list', response_model=list[question_schema.Question])
 def question_list(db: Session = Depends(get_db)):
-    _question_list = db.query(Question).order_by(
-        Question.create_date.desc()).all()
+    # _question_list = db.query(Question).order_by(
+    #     Question.create_date.desc()).all()
+    _question_list = question_crud.get_question_list(db)
     return _question_list
 
 
@@ -46,4 +48,7 @@ db: Session = Depends(get_db) 객체를 주입받았다.
 db: Session 문장의 의미는 db 객체가 Session 타입임을 의미한다.
 
 FastAPI의 Depends는 매개 변수로 전달 받은 함수를 실행시킨 결과를 리턴한다.
+
+response_model=list[question_schema.Question] 는 해당 함수의 리턴값이
+Question 스키마로 구성된 리스트임을 의미한다.
 """
