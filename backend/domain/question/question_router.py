@@ -52,3 +52,9 @@ FastAPI의 Depends는 매개 변수로 전달 받은 함수를 실행시킨 결�
 response_model=list[question_schema.Question] 는 해당 함수의 리턴값이
 Question 스키마로 구성된 리스트임을 의미한다.
 """
+
+
+@router.get('/detail/{question_id}', response_model=question_schema.Question)
+def question_detail(question_id: int, db: Session = Depends(get_db)):
+    question = question_crud.get_question(db, question_id=question_id)
+    return question
