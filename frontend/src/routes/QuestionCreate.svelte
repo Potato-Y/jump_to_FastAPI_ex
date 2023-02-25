@@ -7,7 +7,7 @@
   let subject = '';
   let content = '';
 
-  const post_question = (event) => {
+  function post_question(event) {
     event.preventDefault();
     let url = '/api/question/create';
     let params = {
@@ -25,7 +25,7 @@
         error = json_error;
       }
     );
-  };
+  }
 </script>
 
 <div class="container">
