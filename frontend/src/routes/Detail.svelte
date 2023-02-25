@@ -2,6 +2,7 @@
   import fastApi from '../lib/api';
   import Error from '../components/Error.svelte';
   import { push } from 'svelte-spa-router';
+  import { is_login } from '../lib/store';
   import moment from 'moment/min/moment-with-locales';
   moment.locale('ko');
 
@@ -61,7 +62,7 @@
       push('/');
     }}>목록으로</button
   >
-  <!-- 답변 등록 -->
+  <!-- 답변 목록 -->
   <h5 class="border-bottom my-3 py-2">{question.answers.length}개의 답변이 있습니다.</h5>
   {#each question.answers as answer}
     <div class="card my-3">
@@ -81,8 +82,8 @@
   <Error {error} />
   <form method="post" class="my-3">
     <div class="mb-3">
-      <textarea rows="10" bind:value={content} class="form-control" />
+      <textarea rows="10" bind:value={content} class="form-control" disabled={$is_login ? '' : 'disabled'} />
     </div>
-    <input type="submit" value="답변 등록" class="btn btn-primary" on:click={post_answer} />
+    <input type="submit" value="답변 등록" class="btn btn-primary {$is_login ? '' : 'disabled'}" on:click={post_answer} />
   </form>
 </div>

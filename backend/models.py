@@ -12,6 +12,8 @@ class Question(Base):
     subject = Column(String, nullable=False)  # 제목
     content = Column(Text, nullable=False)  # 내용
     create_date = Column(DateTime, nullable=False)  # 작성 일시
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+    user = relationship('User', backref='question_users')
 
 
 class Answer(Base):
@@ -27,6 +29,8 @@ class Answer(Base):
     # relationship 으로 question 속성을 생성하면 답변 객체 (answer)에서 연결된 질문의 제목을 answer.question.subject 처럼 참조할 수 있다.
     # 역참조란 질문에서 답변을 거꾸로 참조하는 것을 의미. 한 질문에 여러 답반이 달리는데, 역참조는 이 질문에 달린 답변들을 참조할 수 있게 한다.
     # 어떤 질문에 대항하는 객체가 a_question이라면 a_question.answers와 같은 코드로 해당 질문에 달린 답변들을 참조할 수 있다.
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+    user = relationship('User', backref='answer_users')
 
 
 class User(Base):
